@@ -1,0 +1,13 @@
+# To use:
+#
+#  $ conda env create -f environment.yml
+#  $ conda activate informs_env
+name: topaspy_env
+channels: 
+  - conda-forge
+dependencies:
+  # install requires
+  - python
+  # test requires
+  - pytest
+  - pytest-cov
