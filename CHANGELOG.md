@@ -8,3 +8,8 @@ and this project tries to adhere to [Semantic Versioning](https://semver.org/spe
 - CHANGELOG.md
 - .gitignore
 - environment.yml
+- pyproject.toml
+- README.md
+- setup.py
+- topaspy/topaspy.py
+- topaspy/.gitignore
