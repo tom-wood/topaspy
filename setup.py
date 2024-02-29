@@ -12,6 +12,6 @@ setup(name="topaspy",
       long_description=long_description,
       long_description_content_type="text/markdown",
       packages=find_packages(),
-      install_requires=['python'],
+      install_requires=['pymatgen'],
       extras_require={'tests': ['pytest', 'pytest-cov']}
       )
