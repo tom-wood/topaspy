@@ -14,3 +14,7 @@ and this project tries to adhere to [Semantic Versioning](https://semver.org/spe
 - topaspy/topaspy.py
 - topaspy/.gitignore
 - topaspy/__init__.py
+- topaspy/tests/.gitignore
+- topaspy/tests/__init__.py
+- topaspy/tests/test_topaspy.py
+- topaspy/tests/data/test.inp
