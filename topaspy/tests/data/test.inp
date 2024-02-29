@@ -1,0 +1,107 @@
+'>>> XRD
+'  
+'>>> PROFILE METRICS  
+	r_exp  10.8867021 
+	r_wp  17.080898         
+	r_p  13.0440099
+	                                                  
+	r_exp_dash  13.1325639                                                      
+	r_wp_dash  20.6045854 
+	r_p_dash  16.4280403
+	'                                                                                                                                    
+	weighted_Durbin_Watson  1.50548645
+	gof  1.56896898                         
+  
+	do_errors  
+	continue_after_convergence 
+  
+'>>> Diffraction datafile	 
+	xdd "some_data.xye"   ' XYE     
+ 
+'>>> DIFFRACTION PATTERN PARAMETERS                                         
+	start_X   2.5 
+	finish_X 86.0  
+	x_calculation_step 0.002 
+	LP_Factor(0) 
+ 
+'>>> INSTRUMENTAL GEOMETRY PARAMETERS (obtained from Si standard - do not refine) 
+	Zero_Error(,-0.002037)                                                                  
+	'Simple_Axial_Model( , 5.643608) 
+	Simple_Axial_Model(@ , 2.353032`_0.00739893977) 
+'>>> WAVELENGTH (obtained from Si standard - do not refine)	                                                                                                      
+	lam                                             
+		ymin_on_ymax  0.00001               
+		la   1.000 lo  0.826833 lh   0.0010_LIMIT_MIN_0.001 lg    0.0010_LIMIT_MIN_0.001  
+ 
+'>>> EMPIRICAL FIT TO SAMPLE BACKGROUND 
+	bkg  @  2.55792199`_0.0718956045 -0.0750328614`_0.0961072746 -1.32733337`_0.0453192887  0.580056806`_0.0208414362
+
+#define FE4N
+'#define FE
+#define NA2O
+	
+#ifdef FE4N
+	str '12 
+		phase_name "Fe4N" 
+		space_group Pm-3m 
+		a @  3.794220`_0.000125 
+		b = Get(a);    
+		c = Get(a); 
+		al 90.       
+		be 90.       
+		ga 90.       
+		volume  54.622`_0.005 
+		site Fe1    x 0.5           y 0             z 0             occ Fe 1.         beq .630          
+		site Fe2    x 0.5           y 0.5           z 0.5           occ Fe 1.         beq .373          
+		site N1     x 0             y 0             z 0             occ N  1.         beq .42           
+		scale scal12  2.69700201e-06`_4.071e-08 
+		CS_L(csl12, 55.698462`_4.31422488) 
+		CS_G(csg12, 10000`_16467590.1_LIMIT_MIN_0.3) 
+		Strain_L(sl12, 0.174895731`_0.017860478) 
+		Strain_G(sl12, 0.174895731`_0.017860478) 
+#endif
+ 
+#ifdef FE
+		phase_name "Fe" 
+		space_group Im-3m 
+		 
+		a @	2.819719 
+		b @	2.833541 
+		c @	3.022334 
+		al 90. 
+		be 90. 
+		ga 90. 
+		volume 	24.148 
+		site Fe1		x 0				y 0					z 0				occ Fe 1.			beq 0 
+		scale scal13  2.7848745e-006 
+		CS_L(csl13, 9999.99980) 
+		CS_G(csg13, 9999.99993) 
+		Strain_L(sl13, 0.06761) 
+		Strain_G(sl13, 0.06761) 
+#endif
+
+#define NA2O
+		phase_name "Na2O" 
+		space_group Fm-3m 
+		a @  5.685672`_0.001029 
+		b = Get(a);      
+		c = Get(a);      
+		al 90.       
+		be 90.       
+		ga 90.       
+		volume  183.800`_0.100 
+		site O1     x 0             y 0             z 0             occ O  1.         beq 0             
+		site Na1    x 0.25          y 0.25          z 0.25          occ Na 1.         beq 0             
+		scale scal15  1.27706495e-07`_2.16e-08_LIMIT_MIN_1e-15 
+		CS_L(csl15, 92.8256468`_71.4756245_LIMIT_MIN_0.3) 
+		CS_G(csg15, 10000`_51418345.9_LIMIT_MIN_0.3) 
+		Strain_L(sl15, 0.0903107149`_0.108066063) 
+		Strain_G(sl15, 0.0903107149`_0.108066063_LIMIT_MIN_0.0001) 
+		Out_Tick(sodium_oxide_ticks.tic) 
+#endif
+/*
+' 
+' END OF CRYSTAL STRUCTURE DATA 
+'____________________________________________________________________________ 
+' 
+*/
