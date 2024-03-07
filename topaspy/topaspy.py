@@ -2,6 +2,7 @@ class Input:
     def __init__(self, fname):
         self._fname = fname
         self.reset_gof_params()
+        self.reset_other_params()
         self.reload_file()
     
     @property
@@ -56,6 +57,7 @@ class Input:
     
     def parse_file(self):
         gof = False
+        op = False
         for line in self.uncommented_string:
             for s in line.split():
                 if gof:
@@ -65,6 +67,14 @@ class Input:
                 if s in self.gof_params:
                     gof = True
                     gof_kw = s
+                    continue
+                if op:
+                    self.other_params[op_kw] = float(s)
+                    op = False
+                    continue
+                if s in self.other_params:
+                    op = True
+                    op_kw = s
                     continue
 
     def reset_gof_params(self):
@@ -76,3 +86,19 @@ class Input:
                            'r_p_dash' : 0.,
                            'weighted_Durbin_Watson' : 0.,
                            'gof' : 0.,}
+    
+    def reset_other_params(self):
+        self.other_params = {'start_X' : 0.,
+                             'finish_X' : 0.,
+                             'x_calculation_step' : 0.,
+                             'ymin_on_ymax' : 0.}
+    
+
+#TOPAS Technical reference information
+#reserved_params = {'A_star', 'B_star', 'C_star',
+#                   'Change', 'D_spacing', 'H', 'K',
+#                   'L', 'M', 'Iter', 'Cycle',
+#                   'Cycle_Iter', 'Lam', 'Lpa', 'Lpb',
+#                   'Lpc', 'Mi', 'Peak_Calculation_Step',
+#                   'QR_Removed', 'QR_Num_Times_Consecutively_Small',
+#                   'R', 'Ri'}
