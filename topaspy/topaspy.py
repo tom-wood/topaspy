@@ -1,8 +1,8 @@
 class Input:
     def __init__(self, fname):
         self._fname = fname
+        self.xdds = []
         self.reset_gof_params()
-        self.reset_other_params()
         self.reload_file()
     
     @property
@@ -57,7 +57,9 @@ class Input:
     
     def parse_file(self):
         gof = False
-        op = False
+        xdd = False
+        in_xdd = False
+        xdd_count = 0
         for line in self.uncommented_string:
             for s in line.split():
                 if gof:
@@ -68,13 +70,29 @@ class Input:
                     gof = True
                     gof_kw = s
                     continue
-                if op:
-                    self.other_params[op_kw] = float(s)
-                    op = False
+                if in_xdd:
+                    if op:
+                        xdd_now.other_props[op_kw] = float(s)
+                        op = False
+                        continue
+                    if s in xdd_now.other_props:
+                        op = True
+                        op_kw = s
+                        continue
+                if s == 'xdd':
+                    xdd = True
+                    xdd_count += 1
                     continue
-                if s in self.other_params:
-                    op = True
-                    op_kw = s
+                if xdd:
+                    if '"' in s:
+                        #doesn't deal with spaces in filename
+                        self.xdds.append(XDD(s.split('"')[1]))
+                    else:
+                        self.xdds.append(XDD(s))
+                    xdd = False
+                    in_xdd = True
+                    xdd_now = self.xdds[xdd_count - 1]
+                    op = False
                     continue
 
     def reset_gof_params(self):
@@ -86,13 +104,15 @@ class Input:
                            'r_p_dash' : 0.,
                            'weighted_Durbin_Watson' : 0.,
                            'gof' : 0.,}
-    
-    def reset_other_params(self):
-        self.other_params = {'start_X' : 0.,
-                             'finish_X' : 0.,
-                             'x_calculation_step' : 0.,
-                             'ymin_on_ymax' : 0.}
-    
+
+class XDD:
+    def __init__(self, fname):
+        self._fname = fname
+        self.strucs = []
+        self.other_props = {'start_X' : 0.,
+                            'finish_X' : 0.,
+                            'x_calculation_step' : 0.,
+                            'ymin_on_ymax' : 0.}
 
 #TOPAS Technical reference information
 #reserved_params = {'A_star', 'B_star', 'C_star',

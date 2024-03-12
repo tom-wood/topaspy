@@ -42,7 +42,7 @@ class TestInput:
         assert self.inst.gof_params['r_p_dash'] == 16.4280403
         assert self.inst.gof_params['weighted_Durbin_Watson'] == 1.50548645
         assert self.inst.gof_params['gof'] == 1.56896898
-        assert self.inst.other_params['start_X'] == 2.5
-        assert self.inst.other_params['finish_X'] == 86.0
-        assert self.inst.other_params['x_calculation_step'] == 0.002
-        assert self.inst.other_params['ymin_on_ymax'] == 0.00001
+        assert self.inst.xdds[0].other_props['start_X'] == 2.5
+        assert self.inst.xdds[0].other_props['finish_X'] == 86.0
+        assert self.inst.xdds[0].other_props['x_calculation_step'] == 0.002
+        assert self.inst.xdds[0].other_props['ymin_on_ymax'] == 0.00001
