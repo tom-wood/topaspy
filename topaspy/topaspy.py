@@ -66,6 +66,9 @@ class Input:
         current_lambda = []
         in_bkg = False
         current_bkg = []
+        in_xdd_macro = False
+        lcount = 0
+        rcount = 0
         for line in self.uncommented_string:
             for s in line.split():
                 if gof:
@@ -101,10 +104,29 @@ class Input:
                     if in_bkg:
                         if BKG.in_bkg(s):
                             current_bkg.append(s)
+                            continue
                         else:
                             self.xdds[xdd_count-1].set_bkg(current_bkg)
                             current_bkg = []
                             in_bkg = False
+                    if s.split('(')[0] in self.xdds[xdd_count-1].macros:
+                        mac_name = s.split('(')[0] 
+                        in_xdd_macro = True
+                    if in_xdd_macro:
+                        current_macro.append(s)
+                        lcount += s.count('(')
+                        rcount += s.count(')')
+                        if rcount == lcount:
+                            if mac_name[0] == 'Z':
+                                self.xdds[xdd_count-1].set_ZE(current_macro)
+                            elif mac_name == 'LP_Factor':
+                                self.xdds[xdd_count-1].set_LPfactor(current_macro)
+                            current_macro = []
+                            in_xdd_macro = False
+                            lcount = 0
+                            rcount = 0
+                            continue
+                        continue
                 if s == 'xdd':
                     xdd = True
                     xdd_count += 1
@@ -149,12 +171,21 @@ class XDD:
         self.other_props = {'start_X' : 0.,
                             'finish_X' : 0.,
                             'x_calculation_step' : 0.}
+        self.macros = {'ZE', 'Zero_Error', 'LP_Factor',
+                       'Simple_Axial_Model',
+                       'Full_Axial_Model'}
     
     def set_lambda(self, lambda_text):
         self.source = Source(lambda_text)
     
     def set_bkg(self, bkg_text):
         self.bkg = BKG(bkg_text)
+    
+    def set_ZE(self, ze_text):
+        self.ze = Macro(ze_text)
+    
+    def set_LPfactor(self, lp_text):
+        self.lpfactor = Macro(lp_text)
 
 class BKG:
     def __init__(self, bkg_text):

@@ -52,3 +52,5 @@ class TestInput:
         assert all([f"test_macro{n}" in self.inst.macros for n in [1, 2, 3]])
         assert len(xdd.source.lambda_text.split()) == 10
         assert len(xdd.bkg.bkg_text.split()) == 5
+        assert xdd.ze.name == "Zero_Error"
+        assert xdd.lpfactor.name == "LP_Factor"
