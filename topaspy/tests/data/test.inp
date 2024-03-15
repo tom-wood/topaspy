@@ -66,6 +66,7 @@ macro test_macro3(av, cv) { Tetragonal(av, cv) }
 #endif
  
 #ifdef FE
+    str
 		phase_name "Fe" 
 		space_group Im-3m 
 		 
@@ -85,6 +86,7 @@ macro test_macro3(av, cv) { Tetragonal(av, cv) }
 #endif
 
 #define NA2O
+    str
 		phase_name "Na2O" 
 		space_group Fm-3m 
 		a @  5.685672`_0.001029 
