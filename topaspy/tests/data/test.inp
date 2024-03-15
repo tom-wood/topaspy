@@ -36,6 +36,10 @@
 '>>> EMPIRICAL FIT TO SAMPLE BACKGROUND 
 	bkg  @  2.55792199`_0.0718956045 -0.0750328614`_0.0961072746 -1.32733337`_0.0453192887  0.580056806`_0.0208414362
 
+macro test_macro1 { }
+macro test_macro2(av) { Cubic(av) }
+macro test_macro3(av, cv) { Tetragonal(av, cv) }
+
 #define FE4N
 '#define FE
 #define NA2O

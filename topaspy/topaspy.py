@@ -2,6 +2,7 @@ class Input:
     def __init__(self, fname):
         self._fname = fname
         self.xdds = []
+        self.macros = dict()
         self.reset_gof_params()
         self.reload_file()
     
@@ -60,6 +61,8 @@ class Input:
         xdd = False
         in_xdd = False
         xdd_count = 0
+        macro = False
+        current_macro = []
         for line in self.uncommented_string:
             for s in line.split():
                 if gof:
@@ -94,6 +97,17 @@ class Input:
                     xdd_now = self.xdds[xdd_count - 1]
                     op = False
                     continue
+                if s == 'macro':
+                    macro = True
+                    continue
+                if macro:
+                    current_macro.append(s)
+                    if '}' in s:
+                        macro = False
+                        new_macro = Macro(current_macro)
+                        self.macros.update({new_macro.name : new_macro})
+                        current_macro = []
+                    continue
 
     def reset_gof_params(self):
         self.gof_params = {'r_exp' : 0.,
@@ -113,6 +127,16 @@ class XDD:
                             'finish_X' : 0.,
                             'x_calculation_step' : 0.,
                             'ymin_on_ymax' : 0.}
+
+class Macro:
+    def __init__(self, macro):
+        self.macro = macro
+        self.macro_text = ' '.join(macro)
+        self.get_name()
+    
+    def get_name(self):
+        self.name = self.macro[0].split('(')[0]
+
 
 #TOPAS Technical reference information
 #reserved_params = {'A_star', 'B_star', 'C_star',
