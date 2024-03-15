@@ -121,6 +121,8 @@ class Input:
                                 self.xdds[xdd_count-1].set_ZE(current_macro)
                             elif mac_name == 'LP_Factor':
                                 self.xdds[xdd_count-1].set_LPfactor(current_macro)
+                            elif mac_name == 'Simple_Axial_Model' or mac_name == 'Full_Axial_Model':
+                                self.xdds[xdd_count-1].set_axial_model(current_macro)
                             current_macro = []
                             in_xdd_macro = False
                             lcount = 0
@@ -183,6 +185,9 @@ class XDD:
     
     def set_ZE(self, ze_text):
         self.ze = Macro(ze_text)
+    
+    def set_axial_model(self, am_text):
+        self.axial_model = Macro(am_text)
     
     def set_LPfactor(self, lp_text):
         self.lpfactor = Macro(lp_text)

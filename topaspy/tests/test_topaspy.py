@@ -54,3 +54,4 @@ class TestInput:
         assert len(xdd.bkg.bkg_text.split()) == 5
         assert xdd.ze.name == "Zero_Error"
         assert xdd.lpfactor.name == "LP_Factor"
+        assert xdd.axial_model.name == "Simple_Axial_Model"
