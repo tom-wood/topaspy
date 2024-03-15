@@ -34,7 +34,6 @@ class Input:
                 if block_comment:
                     if '*/' in new_line:
                         new_line = new_line[new_line.index('*/') + 2:]
-                        print(new_line)
                         block_comment = False
                 else:
                     if '/*' in new_line:
@@ -63,6 +62,8 @@ class Input:
         xdd_count = 0
         macro = False
         current_macro = []
+        in_lam = False 
+        current_lambda = []
         for line in self.uncommented_string:
             for s in line.split():
                 if gof:
@@ -82,6 +83,16 @@ class Input:
                         op = True
                         op_kw = s
                         continue
+                    if s == 'lam':
+                        in_lam = True
+                        continue
+                    if in_lam:
+                        if Source.in_lambda(s):
+                            current_lambda.append(s)
+                        else:
+                            self.xdds[xdd_count-1].set_lambda(current_lambda)
+                            current_lambda = []
+                            in_lam = False
                 if s == 'xdd':
                     xdd = True
                     xdd_count += 1
@@ -125,8 +136,23 @@ class XDD:
         self.strucs = []
         self.other_props = {'start_X' : 0.,
                             'finish_X' : 0.,
-                            'x_calculation_step' : 0.,
-                            'ymin_on_ymax' : 0.}
+                            'x_calculation_step' : 0.}
+    
+    def set_lambda(self, lambda_text):
+        self.source = Source(lambda_text)
+    
+class Source:
+    def __init__(self, lambda_text):
+        self.lambda_text = ' '.join(lambda_text)
+
+    @staticmethod
+    def in_lambda(s):
+        if s in ['la', 'lo', 'lh', 'lg', 'ymin_on_ymax']:
+            return True
+        if s[0].isdigit():
+            return True
+        return False
+    
 
 class Macro:
     def __init__(self, macro):

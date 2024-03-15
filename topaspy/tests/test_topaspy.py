@@ -45,6 +45,6 @@ class TestInput:
         assert self.inst.xdds[0].other_props['start_X'] == 2.5
         assert self.inst.xdds[0].other_props['finish_X'] == 86.0
         assert self.inst.xdds[0].other_props['x_calculation_step'] == 0.002
-        assert self.inst.xdds[0].other_props['ymin_on_ymax'] == 0.00001
         assert len(self.inst.macros) == 3
         assert all([f"test_macro{n}" in self.inst.macros for n in [1, 2, 3]])
+        assert len(self.inst.xdds[0].source.lambda_text.split()) == 10
