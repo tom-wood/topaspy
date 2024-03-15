@@ -34,17 +34,21 @@ class TestInput:
     
     def test_parse_file(self):
         self.inst.parse_file()
-        assert self.inst.gof_params['r_exp'] == 10.8867021
-        assert self.inst.gof_params['r_wp'] == 17.080898
-        assert self.inst.gof_params['r_p'] == 13.0440099
-        assert self.inst.gof_params['r_exp_dash'] == 13.1325639                                                      
-        assert self.inst.gof_params['r_wp_dash'] == 20.6045854 
-        assert self.inst.gof_params['r_p_dash'] == 16.4280403
-        assert self.inst.gof_params['weighted_Durbin_Watson'] == 1.50548645
-        assert self.inst.gof_params['gof'] == 1.56896898
-        assert self.inst.xdds[0].other_props['start_X'] == 2.5
-        assert self.inst.xdds[0].other_props['finish_X'] == 86.0
-        assert self.inst.xdds[0].other_props['x_calculation_step'] == 0.002
+        ps = self.inst.gof_params
+        assert ps['r_exp'] == 10.8867021
+        assert ps['r_wp'] == 17.080898
+        assert ps['r_p'] == 13.0440099
+        assert ps['r_exp_dash'] == 13.1325639                                                      
+        assert ps['r_wp_dash'] == 20.6045854 
+        assert ps['r_p_dash'] == 16.4280403
+        assert ps['weighted_Durbin_Watson'] == 1.50548645
+        assert ps['gof'] == 1.56896898
+        xdd = self.inst.xdds[0]
+        ops = xdd.other_props
+        assert ops['start_X'] == 2.5
+        assert ops['finish_X'] == 86.0
+        assert ops['x_calculation_step'] == 0.002
         assert len(self.inst.macros) == 3
         assert all([f"test_macro{n}" in self.inst.macros for n in [1, 2, 3]])
-        assert len(self.inst.xdds[0].source.lambda_text.split()) == 10
+        assert len(xdd.source.lambda_text.split()) == 10
+        assert len(xdd.bkg.bkg_text.split()) == 5

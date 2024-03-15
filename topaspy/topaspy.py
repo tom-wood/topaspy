@@ -64,6 +64,8 @@ class Input:
         current_macro = []
         in_lam = False 
         current_lambda = []
+        in_bkg = False
+        current_bkg = []
         for line in self.uncommented_string:
             for s in line.split():
                 if gof:
@@ -93,6 +95,16 @@ class Input:
                             self.xdds[xdd_count-1].set_lambda(current_lambda)
                             current_lambda = []
                             in_lam = False
+                    if s == 'bkg':
+                        in_bkg = True
+                        continue
+                    if in_bkg:
+                        if BKG.in_bkg(s):
+                            current_bkg.append(s)
+                        else:
+                            self.xdds[xdd_count-1].set_bkg(current_bkg)
+                            current_bkg = []
+                            in_bkg = False
                 if s == 'xdd':
                     xdd = True
                     xdd_count += 1
@@ -140,6 +152,19 @@ class XDD:
     
     def set_lambda(self, lambda_text):
         self.source = Source(lambda_text)
+    
+    def set_bkg(self, bkg_text):
+        self.bkg = BKG(bkg_text)
+
+class BKG:
+    def __init__(self, bkg_text):
+        self.bkg_text = ' '.join(bkg_text)
+
+    @staticmethod
+    def in_bkg(s):
+        if s[0].isdigit() or s[0] == '-' or s[0] == '@':
+            return True
+        return False
     
 class Source:
     def __init__(self, lambda_text):
