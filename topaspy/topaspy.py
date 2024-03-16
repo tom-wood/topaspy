@@ -69,16 +69,10 @@ class Input:
         in_xdd_macro = False
         lcount = 0
         rcount = 0
+        self.defines = set()
+        define = False
         for line in self.uncommented_string:
             for s in line.split():
-                if gof:
-                    self.gof_params[gof_kw] = float(s)
-                    gof = False
-                    continue
-                if s in self.gof_params:
-                    gof = True
-                    gof_kw = s
-                    continue
                 if in_xdd:
                     if op:
                         xdd_now.other_props[op_kw] = float(s)
@@ -154,6 +148,21 @@ class Input:
                         new_macro = Macro(current_macro)
                         self.macros.update({new_macro.name : new_macro})
                         current_macro = []
+                    continue
+                if s == "#define":
+                    define = True
+                    continue
+                if define:
+                    self.defines.add(s)
+                    define = False
+                    continue
+                if gof:
+                    self.gof_params[gof_kw] = float(s)
+                    gof = False
+                    continue
+                if s in self.gof_params:
+                    gof = True
+                    gof_kw = s
                     continue
 
     def reset_gof_params(self):

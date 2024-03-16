@@ -55,3 +55,5 @@ class TestInput:
         assert xdd.ze.name == "Zero_Error"
         assert xdd.lpfactor.name == "LP_Factor"
         assert xdd.axial_model.name == "Simple_Axial_Model"
+        assert "FE4N" in self.inst.defines
+        assert "NA2O" in self.inst.defines
