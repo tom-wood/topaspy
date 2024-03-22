@@ -71,8 +71,26 @@ class Input:
         rcount = 0
         self.defines = set()
         define = False
+        ifdef = False
+        in_ifdef = False
+        in_str = False
+        current_str = []
+        updated_str = False
         for line in self.uncommented_string:
             for s in line.split():
+                if s == '#ifdef':
+                    ifdef = True
+                    continue
+                if ifdef:
+                    ifdef = False
+                    if s not in self.defines:
+                        in_ifdef = True
+                        continue
+                if in_ifdef:
+                    if s == '#endif':
+                        in_ifdef = False
+                        continue
+                    continue
                 if in_xdd:
                     if op:
                         xdd_now.other_props[op_kw] = float(s)
@@ -123,7 +141,19 @@ class Input:
                             rcount = 0
                             continue
                         continue
+                    if s == 'str':
+                        in_str = True
+                        updated_str = False
+                        if len(current_str):
+                            self.xdds[xdd_count-1].add_str(current_str)
+                            current_str = []
+                        continue
                 if s == 'xdd':
+                    if in_str:
+                        if len(current_str):
+                            self.xdds[xdd_count-1].add_str(current_str)
+                            updated_str = True
+                        in_str = False
                     xdd = True
                     xdd_count += 1
                     continue
@@ -164,6 +194,10 @@ class Input:
                     gof = True
                     gof_kw = s
                     continue
+                if in_str:
+                    current_str.append(s)
+        if not updated_str:
+            self.xdds[xdd_count-1].add_str(current_str)
 
     def reset_gof_params(self):
         self.gof_params = {'r_exp' : 0.,
@@ -185,6 +219,7 @@ class XDD:
         self.macros = {'ZE', 'Zero_Error', 'LP_Factor',
                        'Simple_Axial_Model',
                        'Full_Axial_Model'}
+        self.structures = dict()
     
     def set_lambda(self, lambda_text):
         self.source = Source(lambda_text)
@@ -200,6 +235,31 @@ class XDD:
     
     def set_LPfactor(self, lp_text):
         self.lpfactor = Macro(lp_text)
+    
+    def add_str(self, str_text):
+        struc = STR(str_text)
+        self.structures.update({struc.phase_name : struc})
+
+class STR:
+    def __init__(self, str_text):
+        self.phase_name = None
+        self.str_text = ' '.join(str_text)
+        self.parse_str(str_text)
+    
+    def parse_str(self, str_text):
+        pn = False
+        for s in str_text:
+            if s == "phase_name":
+                pn = True
+                continue
+            if pn:
+                if '"' in s:
+                    self.phase_name = s.split('"')[1]
+                else:
+                    self.phase_name = s
+                break
+        if self.phase_name is None:
+            self.phase_name = "Unknown_phase"
 
 class BKG:
     def __init__(self, bkg_text):

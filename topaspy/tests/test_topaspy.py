@@ -57,3 +57,5 @@ class TestInput:
         assert xdd.axial_model.name == "Simple_Axial_Model"
         assert "FE4N" in self.inst.defines
         assert "NA2O" in self.inst.defines
+        assert "Fe4N" in xdd.structures
+        assert "Na2O" in xdd.structures
