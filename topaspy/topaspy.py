@@ -148,6 +148,13 @@ class Input:
                             self.xdds[xdd_count-1].add_str(current_str)
                             current_str = []
                         continue
+                    if len(s) > 3 and s[:4] == 'STR(':
+                        in_str = True
+                        updated_str = False
+                        if len(current_str):
+                            self.xdds[xdd_count-1].add_str(current_str)
+                            current_str = [s]
+                        continue
                 if s == 'xdd':
                     if in_str:
                         if len(current_str):
