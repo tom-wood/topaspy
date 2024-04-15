@@ -80,3 +80,9 @@ class TestSTR:
             self.inst.parse_str(inp.split())
             assert self.inst.space_group == 'Pm-3m'
             assert self.inst.phase_name == 'Unknown_phase'
+        pn_inps = ['phase1', '"phase1"']
+        for pni in pn_inps:
+            inp = f'phase_name {pni}'
+            self.inst.parse_str(inp.split())
+            assert self.inst.space_group == 'P1'
+            assert self.inst.phase_name == 'phase1'
