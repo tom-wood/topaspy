@@ -1,5 +1,5 @@
 import pytest
-from topaspy import Input
+from topaspy import Input, STR
 import os
 from os.path import join
 
@@ -59,3 +59,19 @@ class TestInput:
         assert "NA2O" in self.inst.defines
         assert "Fe4N" in xdd.structures
         assert "Na2O" in xdd.structures
+
+class TestSTR:
+    @pytest.fixture(autouse=True)
+    def init_STR(self):
+        self.inst = STR([''])
+
+    def test_parse_str(self):
+        n = 6
+        inputs = ['STR(Pm-3m)', 'STR( Pm-3m )', 'STR( Pm-3m)',
+                  'STR("Pm-3m")', 'STR( "Pm-3m" )', 'STR( "Pm-3m")']
+        sg_res = n * ['Pm-3m']
+        pn_res = n * ['Unknown_phase']
+        for inp, sgr, pnr in zip(inputs, sg_res, pn_res):
+            self.inst.parse_str(inp.split())
+            assert self.inst.space_group == sgr
+            assert self.inst.phase_name == pnr

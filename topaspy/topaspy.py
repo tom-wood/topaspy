@@ -254,19 +254,113 @@ class STR:
         self.parse_str(str_text)
     
     def parse_str(self, str_text):
+        phase_name = None
+        space_group = None
         pn = False
+        sg = False
+        in_macro = False
         for s in str_text:
+            if len(s) > 3 and s[:4] == 'STR(': 
+                in_macro = True
+                sg = True 
+                new_s = s[4:]
+                new_s = new_s.split(',')
+                if not new_s[0]: 
+                    continue
+                if new_s[0][-1] == ')':
+                    if '"' in new_s[0]:
+                        space_group = new_s[0].split('"')[1]
+                    else:
+                        space_group = new_s[0][:-1]
+                    sg = False
+                    in_macro = False
+                    continue
+                if len(new_s) == 1:
+                    space_group = new_s[0]
+                    sg = False
+                    continue
+                else:
+                    if '"' in new_s[1]:
+                        phase_name = new_s[1].split('"')[1]
+                    else:
+                        if new_s1[1]:
+                            if new_s1[1][-1] == ')':
+                                phase_name = new_s[1][:-1]
+                            else:
+                                phase_name = new_s[1]
+                            in_macro = False
+                        continue
+            if in_macro:
+                if sg:
+                    new_s = s.split(',')
+                    if '"' in new_s[0]:
+                        space_group = new_s[0].split('"')[1]
+                    else:
+                        if new_s[0][-1] == ')':
+                            space_group = new_s[0][:-1]
+                            in_macro = False
+                        else:
+                            space_group = new_s[0]
+                    sg = False
+                    if len(new_s) > 1:
+                        if len(new_s[1]):
+                            if '"' in new_s[1]:
+                                phase_name = new_s[1].split('"')[1]
+                            else:
+                                if new_s[1][-1] == ')':
+                                    phase_name = new_s[1][:-1]
+                                else:
+                                    phase_name = new_s[1]
+                            in_macro = False
+                        else:
+                            pn = True
+                        continue
+                if pn:
+                    if '"' in s:
+                        phase_name = s.split('"')[1]
+                    else:
+                        if s[-1] == ')':
+                            phase_name = s[:-1]
+                        else:
+                            phase_name = s
+                    in_macro = False
+                    pn = False
+                    continue
+                if s == ',':
+                    pn = True
+                    continue
+                new_s = s.split(',')
+                if len(new_s) == 1:
+                    in_macro = False
+                    continue
+                else:
+                    if new_s[1][-1] == ')':
+                        phase_name = new_s[1][:-1]
+                    else:
+                        phase_name = new_s[1]
+                    in_macro = False
+                    continue
             if s == "phase_name":
                 pn = True
                 continue
+            if s == "space_group":
+                sg = True
             if pn:
                 if '"' in s:
-                    self.phase_name = s.split('"')[1]
+                    phase_name = s.split('"')[1]
                 else:
-                    self.phase_name = s
+                    phase_name = s
+                pn = False
+                continue
+            if sg:
+                if '"' in s:
+                    space_group = s.split('"')[1]
+                else:
+                    space_group = s
+                sg = False
                 break
-        if self.phase_name is None:
-            self.phase_name = "Unknown_phase"
+        self.phase_name = "Unknown_phase" if phase_name is None else phase_name
+        self.space_group = "P1" if space_group is None else space_group
 
 class BKG:
     def __init__(self, bkg_text):
@@ -289,7 +383,6 @@ class Source:
         if s[0].isdigit():
             return True
         return False
-    
 
 class Macro:
     def __init__(self, macro):
