@@ -276,7 +276,10 @@ class STR:
                     in_macro = False
                     continue
                 if len(new_s) == 1:
-                    space_group = new_s[0]
+                    if '"' in new_s[0]:
+                        space_group = new_s[0].split('"')[1]
+                    else:
+                        space_group = new_s[0]
                     sg = False
                     continue
                 else:
