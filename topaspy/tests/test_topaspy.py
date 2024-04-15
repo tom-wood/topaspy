@@ -67,11 +67,16 @@ class TestSTR:
 
     def test_parse_str(self):
         n = 8
+        sg_inps = ['Pm-3m', '"Pm-3m"']
         sg_inps0 = ['Pm-3m', ' Pm-3m', 'Pm-3m ', ' Pm-3m ',
                     '"Pm-3m"', ' "Pm-3m"', '"Pm-3m" ', ' "Pm-3m" ']
-        #pn_res = n * ['Unknown_phase']
         for sgi in sg_inps0:
             inp = f"STR({sgi})"
+            self.inst.parse_str(inp.split())
+            assert self.inst.space_group == 'Pm-3m'
+            assert self.inst.phase_name == 'Unknown_phase'
+        for sgi in sg_inps:
+            inp = f'space_group {sgi}'
             self.inst.parse_str(inp.split())
             assert self.inst.space_group == 'Pm-3m'
             assert self.inst.phase_name == 'Unknown_phase'

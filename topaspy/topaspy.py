@@ -348,6 +348,7 @@ class STR:
                 continue
             if s == "space_group":
                 sg = True
+                continue
             if pn:
                 if '"' in s:
                     phase_name = s.split('"')[1]
