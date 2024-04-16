@@ -407,13 +407,15 @@ class Value:
     def parse_value(self):
         if '_LIMIT' in self.value_text:
             self.value_text = self.value_text[:self.value_text.index('_L')]
-        vals = self.value_text.split('`_')
+        if '`' in self.value_text:
+            vals = self.value_text.split('`_')
+        else:
+            vals = self.value_text.split('_')
         self.value = float(vals[0])
         if len(vals) == 2:
             self.std = float(vals[1])
         else:
             self.std = 0.
-        
 
 #TOPAS Technical reference information
 #reserved_params = {'A_star', 'B_star', 'C_star',
