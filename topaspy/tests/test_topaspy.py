@@ -43,6 +43,7 @@ class TestInput:
         assert ps['r_p_dash'] == 16.4280403
         assert ps['weighted_Durbin_Watson'] == 1.50548645
         assert ps['gof'] == 1.56896898
+        assert(len(self.inst.xdds)) == 2
         xdd = self.inst.xdds[0]
         ops = xdd.other_props
         assert ops['start_X'] == 2.5

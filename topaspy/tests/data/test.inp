@@ -109,3 +109,4 @@ macro test_macro3(av, cv) { Tetragonal(av, cv) }
 '____________________________________________________________________________ 
 ' 
 */
+xdd "Random_extra_file_for_testing_strings.xye"
