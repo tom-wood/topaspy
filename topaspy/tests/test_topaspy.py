@@ -71,7 +71,7 @@ class TestSTR:
         sg_inps0 = ['Pm-3m', ' Pm-3m', 'Pm-3m ', ' Pm-3m ',
                     '"Pm-3m"', ' "Pm-3m"', '"Pm-3m" ', ' "Pm-3m" ']
         for sgi in sg_inps0:
-            inp = f"STR({sgi})"
+            inp = f'STR({sgi})'
             self.inst.parse_str(inp.split())
             assert self.inst.space_group == 'Pm-3m'
             assert self.inst.phase_name == 'Unknown_phase'
@@ -81,8 +81,24 @@ class TestSTR:
             assert self.inst.space_group == 'Pm-3m'
             assert self.inst.phase_name == 'Unknown_phase'
         pn_inps = ['phase1', '"phase1"']
+        pn_inps0 = ['phase1', ' phase1', 'phase1 ', ' phase1 ',
+                    '"phase1"', ' "phase1"', '"phase1" ', ' "phase1" ']
         for pni in pn_inps:
             inp = f'phase_name {pni}'
             self.inst.parse_str(inp.split())
             assert self.inst.space_group == 'P1'
+            assert self.inst.phase_name == 'phase1'
+        from itertools import product
+        sg_inps1 = [f'space_group {sgi}' for sgi in sg_inps]
+        pn_inps1 = [f'phase_name {pni}' for pni in pn_inps]
+        for inp1, inp2 in product(sg_inps1, pn_inps1):
+            inp = f'{inp1} {inp2}'
+            self.inst.parse_str(inp.split())
+            assert self.inst.space_group == 'Pm-3m'
+            assert self.inst.phase_name == 'phase1'
+        for sgi, pni in product(sg_inps0, pn_inps0):
+            inp = f'STR({sgi},{pni})'
+            print(inp)
+            self.inst.parse_str(inp.split())
+            assert self.inst.space_group == 'Pm-3m'
             assert self.inst.phase_name == 'phase1'
