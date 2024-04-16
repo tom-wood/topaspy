@@ -153,7 +153,7 @@ class Input:
                         updated_str = False
                         if len(current_str):
                             self.xdds[xdd_count-1].add_str(current_str)
-                            current_str = [s]
+                        current_str = [s]
                         continue
                 if s == 'xdd':
                     if in_str:
