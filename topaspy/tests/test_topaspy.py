@@ -110,7 +110,8 @@ class TestValue:
         vals = ['1.0', '1.0_LIMIT_MIN_0.1',
                 '1.0_LIMIT_MAX_1.4',
                 '1.0`_0.1', '1.0`_0.1_LIMIT_MIN_0.1',
-                '1.0`_0.1_LIMIT_MAX_1.4']
+                '1.0`_0.1_LIMIT_MAX_1.4',
+                '1.0_0.1']
         for i, val in enumerate(vals):
             val_example = Value(val)
             assert val_example.value == 1.0
