@@ -163,6 +163,7 @@ class Input:
                         in_str = False
                     xdd = True
                     xdd_count += 1
+                    in_xdd = False
                     continue
                 if xdd:
                     if '"' in s:
