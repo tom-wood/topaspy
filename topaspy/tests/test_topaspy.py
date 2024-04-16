@@ -1,5 +1,5 @@
 import pytest
-from topaspy import Input, STR
+from topaspy import Input, STR, Value
 import os
 from os.path import join
 
@@ -103,3 +103,18 @@ class TestSTR:
             self.inst.parse_str(inp.split())
             assert self.inst.space_group == 'Pm-3m'
             assert self.inst.phase_name == 'phase1'
+
+class TestValue:
+
+    def test_parse_value(self):
+        vals = ['1.0', '1.0_LIMIT_MIN_0.1',
+                '1.0_LIMIT_MAX_1.4',
+                '1.0`_0.1', '1.0`_0.1_LIMIT_MIN_0.1',
+                '1.0`_0.1_LIMIT_MAX_1.4']
+        for i, val in enumerate(vals):
+            val_example = Value(val)
+            assert val_example.value == 1.0
+            if i < 3:
+                assert val_example.std == 0.0
+            else:
+                assert val_example.std == 0.1
