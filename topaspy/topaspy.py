@@ -275,25 +275,35 @@ class STR:
                     sg = False
                     in_macro = False
                     continue
+                if '"' in new_s[0]:
+                    space_group = new_s[0].split('"')[1]
+                else:
+                    space_group = new_s[0]
+                sg = False
                 if len(new_s) == 1:
-                    if '"' in new_s[0]:
-                        space_group = new_s[0].split('"')[1]
-                    else:
-                        space_group = new_s[0]
-                    sg = False
+                    continue
+                if '"' in new_s[1]:
+                    phase_name = new_s[1].split('"')[1]
+                    in_macro = False
                     continue
                 else:
-                    if '"' in new_s[1]:
-                        phase_name = new_s[1].split('"')[1]
-                    else:
-                        if new_s1[1]:
-                            if new_s1[1][-1] == ')':
-                                phase_name = new_s[1][:-1]
-                            else:
-                                phase_name = new_s[1]
-                            in_macro = False
+                    if new_s[1]:
+                        if new_s[1][-1] == ')':
+                            phase_name = new_s[1][:-1]
+                        else:
+                            phase_name = new_s[1]
+                        in_macro = False
                         continue
+                    pn = True
+                    continue
             if in_macro:
+                if s == ',':
+                    pn = True
+                    continue
+                else:
+                    if s[0] == ',':
+                        pn = True
+                        s = s[1:]
                 if sg:
                     new_s = s.split(',')
                     if '"' in new_s[0]:
@@ -318,6 +328,7 @@ class STR:
                         else:
                             pn = True
                         continue
+                    continue
                 if pn:
                     if '"' in s:
                         phase_name = s.split('"')[1]
@@ -329,9 +340,6 @@ class STR:
                     in_macro = False
                     pn = False
                     continue
-                if s == ',':
-                    pn = True
-                    continue
                 new_s = s.split(',')
                 if len(new_s) == 1:
                     in_macro = False
@@ -341,6 +349,8 @@ class STR:
                         phase_name = new_s[1][:-1]
                     else:
                         phase_name = new_s[1]
+                    if '"' in phase_name:
+                        phase_name = phase_name.split('"')[1]
                     in_macro = False
                     continue
             if s == "phase_name":
@@ -362,7 +372,7 @@ class STR:
                 else:
                     space_group = s
                 sg = False
-                break
+                continue
         self.phase_name = "Unknown_phase" if phase_name is None else phase_name
         self.space_group = "P1" if space_group is None else space_group
 
