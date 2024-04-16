@@ -45,9 +45,7 @@ macro test_macro3(av, cv) { Tetragonal(av, cv) }
 #define NA2O
 	
 #ifdef FE4N
-	str '12 
-		phase_name "Fe4N" 
-		space_group Pm-3m 
+	STR(Pm-3m, "Fe4N")
 		a @  3.794220`_0.000125 
 		b = Get(a);    
 		c = Get(a); 
