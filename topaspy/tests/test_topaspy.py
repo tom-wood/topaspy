@@ -105,7 +105,6 @@ class TestSTR:
             assert self.inst.phase_name == 'phase1'
 
 class TestValue:
-
     def test_parse_value(self):
         vals = ['1.0', '1.0_LIMIT_MIN_0.1',
                 '1.0_LIMIT_MAX_1.4',
