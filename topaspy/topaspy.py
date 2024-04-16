@@ -344,15 +344,6 @@ class STR:
                 if len(new_s) == 1:
                     in_macro = False
                     continue
-                else:
-                    if new_s[1][-1] == ')':
-                        phase_name = new_s[1][:-1]
-                    else:
-                        phase_name = new_s[1]
-                    if '"' in phase_name:
-                        phase_name = phase_name.split('"')[1]
-                    in_macro = False
-                    continue
             if s == "phase_name":
                 pn = True
                 continue
