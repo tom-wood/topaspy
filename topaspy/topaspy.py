@@ -1,5 +1,10 @@
 class Input:
-    def __init__(self, fname):
+    """Class to extract and hold data from a TOPAS input file"""
+    def __init__(self, fname : str) -> None:
+        """
+        Args:
+            fname (str): filename of input file
+        """
         self._fname = fname
         self.xdds = []
         self.macros = dict()
@@ -15,15 +20,29 @@ class Input:
         self._fname = val
         self.reload_file()
     
-    def reload_file(self):
+    def reload_file(self) -> None:
+        """Reload input file"""
         with open(self._fname, 'r') as f:
             self.raw_string = f.read()
         self.parse_raw_string(self.raw_string)
     
-    def parse_raw_string(self, raw_string):
+    def parse_raw_string(self, raw_string : str) -> None:
+        """Parse raw string to make sure that comments are removed
+
+        Args:
+            raw_string (str): string of input file
+        """
         self.uncommented_string = self.remove_comments(raw_string)
     
-    def remove_comments(self, raw_string):
+    def remove_comments(self, raw_string : str) -> list:
+        """Remove comments from input file string and split into lines
+        
+        Args:
+            raw_string (str): string of input file
+        Returns:
+            new_lines (list): list of strings, where each string represents a
+            line in the file without the comments (empty lines are ignored)
+        """
         lines = raw_string.split('\n')
         new_lines = []
         block_comment = False
@@ -48,14 +67,22 @@ class Input:
         return new_lines
 
     @staticmethod
-    def remove_line_comment(line):
+    def remove_line_comment(line : str) -> str:
+        """Remove a line comment from a string (one preceded by a ' mark)
+        
+        Args:
+            line (str): string of an input file line
+        Returns:
+            new_line (str): string of input file line without any comments
+        """
         if "'" in line:
             new_line = line[:line.index("'")]
             return new_line
         else:
             return line
     
-    def parse_file(self):
+    def parse_file(self) -> None:
+        """Go through input file and extract all relevant parameters"""
         gof = False
         xdd = False
         in_xdd = False
@@ -93,7 +120,7 @@ class Input:
                     continue
                 if in_xdd:
                     if op:
-                        xdd_now.other_props[op_kw] = float(s)
+                        xdd_now.other_props[op_kw] = Value(s).value
                         op = False
                         continue
                     if s in xdd_now.other_props:
@@ -207,7 +234,8 @@ class Input:
         if not updated_str:
             self.xdds[xdd_count-1].add_str(current_str)
 
-    def reset_gof_params(self):
+    def reset_gof_params(self) -> None:
+        """Reset the goodness of fit parameters to zero"""
         self.gof_params = {'r_exp' : 0.,
                            'r_wp' : 0.,
                            'r_p' : 0.,
@@ -218,7 +246,12 @@ class Input:
                            'gof' : 0.,}
 
 class XDD:
-    def __init__(self, fname):
+    """Class to hold data relating to analysis of a dataset"""
+    def __init__(self, fname : str) -> None:
+        """
+        Args:
+            fname (str): filename of experimental data
+        """
         self._fname = fname
         self.strucs = []
         self.other_props = {'start_X' : 0.,
@@ -229,32 +262,71 @@ class XDD:
                        'Full_Axial_Model'}
         self.structures = dict()
     
-    def set_lambda(self, lambda_text):
+    def set_lambda(self, lambda_text : str) -> None:
+        """Set the source information
+        
+        Args:
+            lambda_text (str) : text from input file relating to source characteristics
+        """
         self.source = Source(lambda_text)
     
-    def set_bkg(self, bkg_text):
+    def set_bkg(self, bkg_text : str) -> None:
+        """Set Chebyshev background information for dataset
+        
+        Args:
+            bkg_text (str): text from input file relating to Chebyshev background parameters
+        """
         self.bkg = BKG(bkg_text)
     
-    def set_ZE(self, ze_text):
+    def set_ZE(self, ze_text : str) -> None:
+        """Set Zero Error information for dataset
+        
+        Args:
+            ze_text (str): text from input file relating to zero error
+        """
         self.ze = Macro(ze_text)
     
-    def set_axial_model(self, am_text):
+    def set_axial_model(self, am_text : str) -> None:
+        """Set axial model information for dataset
+        
+        Args:
+            am_text (str): text from input file relating to axial model
+        """
         self.axial_model = Macro(am_text)
     
-    def set_LPfactor(self, lp_text):
+    def set_LPfactor(self, lp_text : str) -> None:
+        """Set Lorentz polarization information for dataset
+        
+        Args:
+            lp_text (str): text from input file relating to Lorentz polarization
+        """
         self.lpfactor = Macro(lp_text)
     
-    def add_str(self, str_text):
+    def add_str(self, str_text : list) -> None:
+        """Add a structure information block
+        
+        Args:
+            str_text (list): list of strings from input file relating to structure
+        """
         struc = STR(str_text)
         self.structures.update({struc.phase_name : struc})
 
 class STR:
-    def __init__(self, str_text):
+    """Class to parse and hold structural information data"""
+    def __init__(self, str_text : list) -> None:
+        """
+        Args:
+            str_text (list) : list of strings from input file relating to structure
+        """
         self.phase_name = None
         self.str_text = ' '.join(str_text)
         self.parse_str(str_text)
     
-    def parse_str(self, str_text):
+    def parse_str(self, str_text : list) -> None:
+        """Parse structural information from input file
+        Args:
+            str_text (list) : list of strings from input file relating to structure
+        """
         phase_name = None
         space_group = None
         pn = False
@@ -369,21 +441,42 @@ class STR:
         self.space_group = "P1" if space_group is None else space_group
 
 class BKG:
-    def __init__(self, bkg_text):
+    """Class to hold Chebyshev background information"""
+    def __init__(self, bkg_text : list) -> None:
+        """
+        Args:
+            bkg_text (list): list of strings from input file relating to Chebyshev
+            background.
+        """
         self.bkg_text = ' '.join(bkg_text)
 
     @staticmethod
-    def in_bkg(s):
+    def in_bkg(s : str) -> bool:
+        """Return boolean for whether string could be part of background or not
+        
+        Args:
+            s (str): string about which to determine if possibly background parameter
+        """
         if s[0].isdigit() or s[0] == '-' or s[0] == '@':
             return True
         return False
     
 class Source:
-    def __init__(self, lambda_text):
+    """Class to hold (X-ray) source information"""
+    def __init__(self, lambda_text : list) -> None:
+        """
+        Args:
+            lambda_text (list): list of strings from input file relating to source 
+        """
         self.lambda_text = ' '.join(lambda_text)
 
     @staticmethod
-    def in_lambda(s):
+    def in_lambda(s : str) -> bool:
+        """Return boolean for whether string could be part of source info or not
+        
+        Args:
+            s (str): string about which to determine if possibly source parameter
+        """
         if s in ['la', 'lo', 'lh', 'lg', 'ymin_on_ymax']:
             return True
         if s[0].isdigit():
@@ -391,20 +484,32 @@ class Source:
         return False
 
 class Macro:
-    def __init__(self, macro):
+    def __init__(self, macro : list) -> None:
+        """Class to hold (minimal) TOPAS macro information
+        
+        Args:
+            macro (list): list of strings from input file defining macro
+        """
         self.macro = macro
         self.macro_text = ' '.join(macro)
         self.get_name()
     
-    def get_name(self):
+    def get_name(self) -> None:
+        """Assign macro name from macro information"""
         self.name = self.macro[0].split('(')[0]
 
 class Value:
-    def __init__(self, value_text):
+    """Class to parse and hold a parameter value (with associated uncertainty)"""
+    def __init__(self, value_text : str) -> None:
+        """
+        Args:
+            value_text (str): string with value text from input file
+        """
         self.value_text = value_text
         self.parse_value()
     
-    def parse_value(self):
+    def parse_value(self) -> None:
+        """Assign value and uncertainty quantities"""
         if '_LIMIT' in self.value_text:
             self.value_text = self.value_text[:self.value_text.index('_L')]
         if '`' in self.value_text:
@@ -416,12 +521,3 @@ class Value:
             self.std = float(vals[1])
         else:
             self.std = 0.
-
-#TOPAS Technical reference information
-#reserved_params = {'A_star', 'B_star', 'C_star',
-#                   'Change', 'D_spacing', 'H', 'K',
-#                   'L', 'M', 'Iter', 'Cycle',
-#                   'Cycle_Iter', 'Lam', 'Lpa', 'Lpb',
-#                   'Lpc', 'Mi', 'Peak_Calculation_Step',
-#                   'QR_Removed', 'QR_Num_Times_Consecutively_Small',
-#                   'R', 'Ri'}
