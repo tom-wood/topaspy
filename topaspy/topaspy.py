@@ -1,3 +1,9 @@
+#TODO
+#1. deal with prm
+#2. deal with PVs?
+#3. method to plot Chebyshevs
+#4. Get structures sorted!
+
 class Input:
     """Class to extract and hold data from a TOPAS input file"""
     def __init__(self, fname : str) -> None:
@@ -8,6 +14,7 @@ class Input:
         self._fname = fname
         self.xdds = []
         self.macros = dict()
+        self.prms = dict()
         self.reset_gof_params()
         self.reload_file()
     
@@ -83,6 +90,7 @@ class Input:
     
     def parse_file(self) -> None:
         """Go through input file and extract all relevant parameters"""
+        prm_kws = ['min', 'max', 'update', 'stop_when']
         gof = False
         xdd = False
         in_xdd = False
@@ -103,6 +111,10 @@ class Input:
         in_str = False
         current_str = []
         updated_str = False
+        in_prm = False
+        prm = False
+        current_prm = []
+        in_eqn = False
         for line in self.uncommented_string:
             for s in line.split():
                 if s == '#ifdef':
@@ -118,6 +130,45 @@ class Input:
                         in_ifdef = False
                         continue
                     continue
+                if s == 'prm':
+                    if in_prm:
+                        self.prms.update({current_prm_name : PRM(current_prm)})
+                        current_prm = []
+                    in_prm = True
+                    prm = True
+                    continue
+                if in_prm:
+                    if prm:
+                        current_prm.append(s)
+                        current_prm_name = s
+                        prm = False
+                        continue
+                    else:
+                        if '=' in s:
+                            current_prm.append(s)
+                            in_eqn = True
+                            if ';' in s:
+                                in_eqn = False
+                            continue
+                        else:
+                            if ';' in s:
+                                current_prm.append(s)
+                                in_eqn = False
+                                continue
+                            if in_eqn:
+                                current_prm.append(s)
+                                continue
+                            else:
+                                if s[0].isalpha() or s[0] == '#':
+                                    if s in prm_kws:
+                                        current_prm.append(s)
+                                        continue
+                                    in_prm = False
+                                    self.prms.update({current_prm_name : PRM(current_prm)})
+                                    current_prm = []
+                                else:
+                                    current_prm.append(s)
+                                    continue
                 if in_xdd:
                     if op:
                         xdd_now.other_props[op_kw] = Value(s).value
@@ -482,6 +533,20 @@ class Source:
         if s[0].isdigit():
             return True
         return False
+
+class PRM:
+    """Class to hold parameter information"""
+    def __init__(self, prm_text : list) -> None:
+        """
+        Args:
+            prm_text (list): list of strings from input file relating to parameter
+        """
+        self.prm_text = prm_text
+        self.get_name()
+    
+    def get_name(self) -> None:
+        """Assign parameter name from prm information"""
+        self.name = self.prm_text[1]
 
 class Macro:
     def __init__(self, macro : list) -> None:

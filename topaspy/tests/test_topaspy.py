@@ -1,5 +1,5 @@
 import pytest
-from topaspy import Input, STR, Value
+from topaspy import Input, STR, Value, PRM
 import os
 from os.path import join
 
@@ -118,3 +118,18 @@ class TestValue:
                 assert val_example.std == 0.0
             else:
                 assert val_example.std == 0.1
+
+class TestParameter:
+    @pytest.fixture(autouse=True)
+    def init_PRM(self):
+        prm_strs = ['prm random_prm0 45.0',
+                    'prm random_prm1 = 45.0 * 1;',
+                    'prm random_prm2 = 45.0 * 1; : 45.0',
+                    'prm random_prm3 = random_prm2 * 1; : 45.0',
+                   ]
+        prms = [PRM(s.split()) for s in prm_strs]
+        self.insts = dict([(p.name, p) for p in prms])
+    
+    def test_get_name(self):
+        for i, prm in enumerate(self.insts):
+            assert self.insts[prm].name == f"random_prm{i}"

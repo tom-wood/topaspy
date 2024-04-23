@@ -43,6 +43,12 @@ macro test_macro3(av, cv) { Tetragonal(av, cv) }
 #define FE4N
 '#define FE
 #define NA2O
+
+'defining some random parameters here for testing purposes
+prm random_prm0 45.0
+prm random_prm1 = 45.0 * 1;
+prm random_prm2 = 45.0 * 1; : 45.0
+prm random_prm3 = random_prm2 * 1; : 45.0
 	
 #ifdef FE4N
 	STR(Pm-3m, "Fe4N")
