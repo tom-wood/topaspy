@@ -53,6 +53,7 @@ prm random_prm3 = random_prm2 * 1; : 45.0
 #ifdef FE4N
 	STR(Pm-3m, "Fe4N")
 		a @  3.794220`_0.000125 
+		prm random_prm4 45.0 min=10; max=55;
 		b = Get(a);    
 		c = Get(a); 
 		al 90.       

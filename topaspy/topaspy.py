@@ -1,5 +1,4 @@
 #TODO
-#1. deal with prm
 #2. deal with PVs?
 #3. method to plot Chebyshevs
 #4. Get structures sorted!

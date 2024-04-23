@@ -60,6 +60,8 @@ class TestInput:
         assert "NA2O" in self.inst.defines
         assert "Fe4N" in xdd.structures
         assert "Na2O" in xdd.structures
+        for i in range(5):
+            assert f"random_prm{i}" in self.inst.prms
 
 class TestSTR:
     @pytest.fixture(autouse=True)
