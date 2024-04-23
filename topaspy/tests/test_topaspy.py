@@ -62,6 +62,7 @@ class TestInput:
         assert "Na2O" in xdd.structures
         for i in range(5):
             assert f"random_prm{i}" in self.inst.prms
+        assert sum(xdd.bkg.coefficients) == 1.7356125646
 
 class TestSTR:
     @pytest.fixture(autouse=True)

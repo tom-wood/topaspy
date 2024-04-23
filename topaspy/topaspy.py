@@ -3,6 +3,8 @@
 #3. method to plot Chebyshevs
 #4. Get structures sorted!
 
+import numpy as np
+
 class Input:
     """Class to extract and hold data from a TOPAS input file"""
     def __init__(self, fname : str) -> None:
@@ -499,6 +501,9 @@ class BKG:
             background.
         """
         self.bkg_text = ' '.join(bkg_text)
+        self.refined = False
+        self.values = []
+        self.parse_bkg()
 
     @staticmethod
     def in_bkg(s : str) -> bool:
@@ -510,6 +515,16 @@ class BKG:
         if s[0].isdigit() or s[0] == '-' or s[0] == '@':
             return True
         return False
+    
+    def parse_bkg(self) -> None:
+        for s in self.bkg_text.split():
+            if s == 'bkg':
+                continue
+            if s == '@':
+                self.refined = True
+            else:
+                self.values.append(Value(s))
+        self.coefficients = np.array([v.value for v in self.values])
     
 class Source:
     """Class to hold (X-ray) source information"""
