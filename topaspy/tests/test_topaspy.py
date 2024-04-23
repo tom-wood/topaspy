@@ -8,15 +8,15 @@ data_fpath = join(pwd, './data/')
 
 class TestInput:
     @pytest.fixture(autouse=True)
-    def init_input(self):
+    def init_input(self) -> None:
         self.inst = Input(f"{data_fpath}/test.inp")
     
-    def test_fpath(self):
+    def test_fpath(self) -> None:
         assert self.inst.fname.split('/')[-1] == "test.inp"
         with pytest.raises(FileNotFoundError):
             self.inst.fname = "nonsense.inp"
     
-    def test_remove_line_comment(self):
+    def test_remove_line_comment(self) -> None:
         s0 = "xdd'another comment"
         s1 = "'"
         s2 = "xdd"
@@ -26,13 +26,13 @@ class TestInput:
         assert self.inst.remove_line_comment(s2) == "xdd"
         assert self.inst.remove_line_comment(s3) == "xdd"
     
-    def test_remove_comments(self):
+    def test_remove_comments(self) -> None:
         s0 = "xdd'another comment\n/*\nother*/"
         s1 = "'comment\nxdd/*other*/\n"
         assert ''.join(self.inst.remove_comments(s0)) == "xdd"
         assert ''.join(self.inst.remove_comments(s1)) == "xdd"
     
-    def test_parse_file(self):
+    def test_parse_file(self) -> None:
         self.inst.parse_file()
         ps = self.inst.gof_params
         assert ps['r_exp'] == 10.8867021
@@ -65,10 +65,10 @@ class TestInput:
 
 class TestSTR:
     @pytest.fixture(autouse=True)
-    def init_STR(self):
+    def init_STR(self) -> None:
         self.inst = STR([''])
 
-    def test_parse_str(self):
+    def test_parse_str(self) -> None:
         n = 8
         sg_inps = ['Pm-3m', '"Pm-3m"']
         sg_inps0 = ['Pm-3m', ' Pm-3m', 'Pm-3m ', ' Pm-3m ',
@@ -107,7 +107,7 @@ class TestSTR:
             assert self.inst.phase_name == 'phase1'
 
 class TestValue:
-    def test_parse_value(self):
+    def test_parse_value(self) -> None:
         vals = ['1.0', '1.0_LIMIT_MIN_0.1',
                 '1.0_LIMIT_MAX_1.4',
                 '1.0`_0.1', '1.0`_0.1_LIMIT_MIN_0.1',
@@ -123,7 +123,7 @@ class TestValue:
 
 class TestParameter:
     @pytest.fixture(autouse=True)
-    def init_PRM(self):
+    def init_PRM(self) -> None:
         prm_strs = ['prm random_prm0 45.0',
                     'prm random_prm1 = 45.0 * 1;',
                     'prm random_prm2 = 45.0 * 1; : 45.0',
@@ -132,6 +132,6 @@ class TestParameter:
         prms = [PRM(s.split()) for s in prm_strs]
         self.insts = dict([(p.name, p) for p in prms])
     
-    def test_get_name(self):
+    def test_get_name(self) -> None:
         for i, prm in enumerate(self.insts):
             assert self.insts[prm].name == f"random_prm{i}"
