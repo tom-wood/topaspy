@@ -1,5 +1,5 @@
 import pytest
-from topaspy import Input, STR, Value, PRM
+from topaspy import Input, STR, Value, PRM, Equation
 import os
 from os.path import join
 
@@ -136,3 +136,17 @@ class TestParameter:
     def test_get_name(self) -> None:
         for i, prm in enumerate(self.insts):
             assert self.insts[prm].name == f"random_prm{i}"
+
+class TestEquation:
+    @pytest.fixture(autouse=True)
+    def init_eqn(self) -> None:
+        eqn_strs = ['=17* 54;', '= 83 * occ_H1 - 3; : 42.08']
+        self.insts = [Equation(eqn.split()) for eqn in eqn_strs]
+        self.answers = [None, 42.08]
+    
+    def test_parse_equation(self) -> None:
+        for ans, inst in zip(self.answers, self.insts):
+            if ans is None:
+                assert inst.value is None
+            else:
+                assert inst.value.value == ans

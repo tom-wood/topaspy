@@ -1,4 +1,5 @@
 #TODO
+#1. Equation class
 #2. deal with PVs?
 #3. method to plot Chebyshevs
 #4. Get structures sorted!
@@ -600,3 +601,23 @@ class Value:
             self.std = float(vals[1])
         else:
             self.std = 0.
+
+class Equation:
+    """Class to parse and hold equation values"""
+    def __init__(self, eqn_text : list) -> None:
+        """
+        Args:
+            eqn_text (list): list of strings from input file relating to parameter
+        """
+        self.eqn_text = eqn_text
+        self.value = None
+        self.parse_eqn()
+    
+    def parse_eqn(self) -> None:
+        next_value = False
+        for s in self.eqn_text:
+            if ':' in s:
+                next_value = True
+                continue
+            if next_value:
+                self.value = Value(s)
