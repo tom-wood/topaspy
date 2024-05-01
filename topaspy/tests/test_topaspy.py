@@ -1,5 +1,5 @@
 import pytest
-from topaspy import Input, STR, Value, PRM, Equation
+from topaspy import Input, STR, Value, PRM, Equation, BKG
 import os
 from os.path import join
 
@@ -150,3 +150,17 @@ class TestEquation:
                 assert inst.value is None
             else:
                 assert inst.value.value == ans
+
+class TestBKG:
+    @pytest.fixture(autouse=True)
+    def init_bkg(self) -> None:
+        bkg_strs = ['bkg @ 0 0 0 0',
+                    '@ 1.5`_0.4 2.5`_0.7']
+        self.insts = [BKG(bs.split()) for bs in bkg_strs]
+        self.sums = [0, 4.0]
+        self.sum_stds = [0, 1.1]
+    
+    def test_parse_bkg(self) -> None:
+        for inst, cs, css in zip(self.insts, self.sums, self.sum_stds):
+            assert sum(inst.coefficients) == cs
+            assert sum([v.std for v in inst.values]) == css
