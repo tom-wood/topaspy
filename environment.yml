@@ -9,6 +9,7 @@ dependencies:
   # install requires
   - python
   - pymatgen
+  - numpy
   # test requires
   - pytest
   - pytest-cov
